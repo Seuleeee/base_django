@@ -4,6 +4,18 @@
 * DB 연동, Swagger Setting, Project Structure 변경이 힘들었습니다.
 * 그리하여, Django - MariaDB - Redis 를 동시에 사용 가능한 Project Base를 만들었습니다.
 
+## Tech
+## 적용 기술
+<div>
+ <img src="https://img.shields.io/badge/Python 3.11.1-3776AB?style=flat-square&logo=Python&logoColor=white"/>
+ <img src="https://img.shields.io/badge/Django 4.1.4-092E20?style=flat-square&logo=Django&logoColor=white"/>
+</div>
+<div>
+  <img src="https://img.shields.io/badge/MariaDB 10.7.3-003545?style=flat-square&logo=MariaDB&logoColor=white"/>
+</div>
+<div>
+ <img src="https://img.shields.io/badge/Docker 20.10.17-2496ED?style=flat-square&logo=Docker&logoColor=white"/>
+</div>
 
 ## Structure
 ```
@@ -36,7 +48,7 @@
 └─Dockerfile.yml
 ```
 
-## Environment Varialbles
+## Environment Variables
 ### .compose_env
 * 생성 위치 : 프로젝트 최상단
 * docker-compose.yml 파일의 services > mariadb > environment 필드에 대응
@@ -65,7 +77,10 @@ DB_PORT=3306
 
 ## 실행 방법
 * docker-compose 사용 가능 환경
+* Swagger 적용 : 프로젝트 최상단 'static' 디렉토리 생성
 * docker-compose.yml 파일이 위치한 경로에서 아래 명령어를 입력
 ```
+python manage.py collectstatic
 docker-compose up --build
 ```
+
