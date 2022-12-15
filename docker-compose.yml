@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+    mariadb:
+        image: mariadb:10
+        container_name: mariadb
+        ports:
+            - '3307:3306'
+        volumes:
+            - ./db/conf.d:/etc/mysql/conf.d
+            - ./db/data:/var/lib/mysql
+            - ./db/initdb.d:/docker-entrypoint-initdb.d
+        env_file: .compose_env
+        environment:
+            TZ: Asia/Seoul
+        restart: always
+        networks:
+            - web
+    redis:
+        image: redis
+        container_name: redis
+        ports:
+            - '6379:6379'
+    backend:
+        build: .
+        container_name: backend
+        command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+        volumes:
+            - ./static:/usr/src/app/staticfiles
+        ports:
+            - '8000:8000'
+        depends_on:
+            - mariadb
+        networks:
+            - web
+
+networks:
+    web:
+
