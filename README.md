@@ -31,9 +31,12 @@
 │  └─views.py
 │  
 ├─config
-│  └─.env (별도 작성 필요, 아래 참고)
-│  └─asgi.py
 │  └─settings.py
+│  └───.env (별도 작성 필요, 아래 참고)
+│  └───base.py
+│  └───dev.py
+│  └───prod.py
+│  └─asgi.py
 │  └─urls.py
 │  └─wsgi.py
 │

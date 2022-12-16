@@ -24,7 +24,7 @@ services:
     backend:
         build: .
         container_name: backend
-        command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+        command: gunicorn --bind 0.0.0.0:8000 config.asgi:application -w 3 -k uvicorn.workers.UvicornWorker
         volumes:
             - ./static:/usr/src/app/staticfiles
         ports:
