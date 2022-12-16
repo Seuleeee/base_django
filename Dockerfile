@@ -18,6 +18,7 @@ COPY requirements.txt ./
 RUN pip install --upgrade pip && \
     pip install --upgrade setuptools
 RUN pip install -r requirements.txt
+RUN mkdir -p logs
 
 
 

@@ -20,7 +20,7 @@ env = environ.Env(
 environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -100,6 +100,73 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+
+# Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'encoding': 'utf-8',
+    'formatters': {
+        'django.server': {
+            '()': 'django.utils.log.ServerFormatter',
+            'format': '[{server_time}] {message}',
+            'style': '{',
+        },
+        'standard': {
+            'format': '[%(asctime)s]-[%(levelname)s|%(filename)s:%(lineno)s]-[%(message)s]'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+        },
+        'django.server': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'django.server',
+        },
+        'log_file': {
+            'class': 'logging.FileHandler',
+            'filters': ['require_debug_false'],
+            'level': 'INFO',
+            'formatter': 'standard',
+            'filename': os.path.join(BASE_DIR, 'logs/server.log'),
+        },
+        'error_file': {
+            'class': 'logging.FileHandler',
+            'filters': ['require_debug_false'],
+            'level': 'ERROR',
+            'formatter': 'standard',
+            'filename': os.path.join(BASE_DIR, 'logs/error.log'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'log_file', 'error_file'],
+            'level': 'INFO',
+        },
+        'django.server': {
+            'handlers': ['django.server'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'prod': {
+            'handlers': ['console', 'log_file', 'error_file'],
+            'level': 'INFO'
+        },
+    }
+}
 
 
 # Internationalization
