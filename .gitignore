@@ -365,4 +365,4 @@ $RECYCLE.BIN/
 /static/
 /db/data/
 /.compose_env
-/config/.env
+/config/settings/.env
