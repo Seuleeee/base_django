@@ -101,6 +101,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+EMAIL_BACKEND = env('EMAIL_BACKEND')
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+
+ADMINS = [('admin', env('EMAIL_ADMIN'))]
 
 # Logging
 LOGGING = {
@@ -150,6 +158,11 @@ LOGGING = {
             'formatter': 'standard',
             'filename': os.path.join(BASE_DIR, 'logs/error.log'),
         },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler',
+        }
     },
     'loggers': {
         'django': {
@@ -162,7 +175,7 @@ LOGGING = {
             'propagate': False,
         },
         'prod': {
-            'handlers': ['console', 'log_file', 'error_file'],
+            'handlers': ['console', 'log_file', 'error_file', 'mail_admins'],
             'level': 'INFO'
         },
     }
@@ -191,10 +204,3 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-EMAIL_BACKEND = env('EMAIL_BACKEND')
-EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587

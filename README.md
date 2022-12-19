@@ -89,10 +89,10 @@
   
   # ========== EMAIL =========
   EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
-  EMAIL_HOST='smtp.gmail.com'
+  EMAIL_HOST='your email host' # ex) smtp.gmail.com
   EMAIL_HOST_USER='user_email@example.com'
   EMAIL_HOST_PASSWORD='user_email_password'
-  
+  EMAIL_ADMIN='admin_user_email@example.com'
   ```
 
 ## 실행 방법
