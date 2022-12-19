@@ -86,6 +86,13 @@
   PROD_DB_PASSWORD={DB_PASSWORD}
   PROD_DB_HOST=maraidb # docker-compose.yml 에서 지정한 container_name
   PROD_DB_PORT=3306
+  
+  # ========== EMAIL =========
+  EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+  EMAIL_HOST='smtp.gmail.com'
+  EMAIL_HOST_USER='user_email@example.com'
+  EMAIL_HOST_PASSWORD='user_email_password'
+  
   ```
 
 ## 실행 방법
