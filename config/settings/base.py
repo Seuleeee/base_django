@@ -51,6 +51,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
+    # ============= custom middleware ==============
+    "middleware.exception_handler.ExceptionHandlerMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -101,14 +104,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+DEFAULT_FROM_EMAIL = env('EMAIL_HOST')
 EMAIL_BACKEND = env('EMAIL_BACKEND')
 EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-
-ADMINS = [('admin', env('EMAIL_ADMIN'))]
+RECEIVE_ERROR_LOG_EMAIL = env('EMAIL_ADMIN')
 
 # Logging
 LOGGING = {
@@ -157,11 +160,6 @@ LOGGING = {
             'level': 'ERROR',
             'formatter': 'standard',
             'filename': os.path.join(BASE_DIR, 'logs/error.log'),
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler',
         }
     },
     'loggers': {
@@ -175,7 +173,7 @@ LOGGING = {
             'propagate': False,
         },
         'prod': {
-            'handlers': ['console', 'log_file', 'error_file', 'mail_admins'],
+            'handlers': ['console', 'log_file', 'error_file'],
             'level': 'INFO'
         },
     }
