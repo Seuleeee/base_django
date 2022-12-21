@@ -11,5 +11,9 @@ class Board(views.APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request: HttpRequest):
-        result = BoardService().create(request.data)
-        return Response(result)
+        try:
+            result = BoardService().create(request.data)
+            return Response(result)
+        except Exception:
+            print('bvlah')
+
