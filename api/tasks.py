@@ -12,3 +12,8 @@ def send_email_task(subject: str, body: str, to: List[str]):
         body=body,
         to=to
     )
+
+
+@shared_task
+def test_periodic_job():
+    print("Test Complete!!!")

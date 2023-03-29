@@ -112,6 +112,7 @@
     python manage.py collectstatic
     python manage.py runserver
     celery -A config worker -l info
+    celery -A config beat -l info
     ```
 
 ## 참고
