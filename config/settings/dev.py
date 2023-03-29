@@ -4,6 +4,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost']
 
+INSTALLED_APPS += [
+    'debug_toolbar',
+]
+
+MIDDLEWARE += [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+
 DATABASES = {
     "default": {
         "ENGINE": env('DEV_DB_ENGINE'),

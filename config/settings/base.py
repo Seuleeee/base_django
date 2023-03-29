@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 import environ
+from datetime import timedelta
 
 
 env = environ.Env(
@@ -39,7 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    'knox',
+    "rest_framework_simplejwt",
     "drf_yasg",
     "api",
 ]
@@ -81,9 +82,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Django Rest Framework
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        # 'rest_framework.permissions.IsAuthenticated',
-        'rest_framework.permissions.AllowAny',
-    ]
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
 }
 
 
@@ -105,7 +108,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Logging
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -119,56 +121,78 @@ LOGGING = {
     },
     'encoding': 'utf-8',
     'formatters': {
-        'django.server': {
-            '()': 'django.utils.log.ServerFormatter',
-            'format': '[{server_time}] {message}',
-            'style': '{',
-        },
-        'standard': {
-            'format': '[%(asctime)s]-[%(levelname)s|%(filename)s:%(lineno)s]-[%(message)s]'
-        },
+        'simple': {
+            'format': "[%(asctime)s]-[%(levelname)s|%(filename)s:%(lineno)s]-[%(message)s]",
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        }
     },
     'handlers': {
         'console': {
-            'level': 'INFO',
-            'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+            'formatter': 'simple',
+            'stream': 'ext://sys.stdout',
         },
-        'django.server': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'django.server',
-        },
-        'log_file': {
+        'logfile': {
             'class': 'logging.FileHandler',
             'filters': ['require_debug_false'],
             'level': 'INFO',
-            'formatter': 'standard',
+            'formatter': 'simple',
             'filename': os.path.join(BASE_DIR, 'logs/server.log'),
         },
         'error_file': {
             'class': 'logging.FileHandler',
             'filters': ['require_debug_false'],
             'level': 'ERROR',
-            'formatter': 'standard',
+            'formatter': 'simple',
             'filename': os.path.join(BASE_DIR, 'logs/error.log'),
-        }
+        },
     },
     'loggers': {
-        'django': {
-            'handlers': ['console', 'log_file', 'error_file'],
-            'level': 'INFO',
+        'django.db.backends': {
+            'handlers': ['console', ],
+            'level': 'DEBUG',
+            'propagate': False,
         },
-        'django.server': {
-            'handlers': ['django.server'],
+        'clm': {
+            'handlers': ['logfile', 'console', 'error_file'],
             'level': 'INFO',
             'propagate': False,
         },
-        'prod': {
-            'handlers': ['console', 'log_file', 'error_file'],
-            'level': 'INFO'
-        },
-    }
+    },
+}
+
+# 추가적인 JWT_AUTH 설정
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'UPDATE_LAST_LOGIN': False,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+    'JWK_URL': None,
+    'LEEWAY': 0,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
+
+    'JTI_CLAIM': 'jti',
+
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
 
