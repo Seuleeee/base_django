@@ -78,6 +78,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+# Celery
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")
+
 
 # Django Rest Framework
 REST_FRAMEWORK = {
@@ -153,12 +157,7 @@ LOGGING = {
             'handlers': ['console', ],
             'level': 'DEBUG',
             'propagate': False,
-        },
-        'clm': {
-            'handlers': ['logfile', 'console', 'error_file'],
-            'level': 'INFO',
-            'propagate': False,
-        },
+        }
     },
 }
 
@@ -218,3 +217,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = env("EMAIL_PORT")
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

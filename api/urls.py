@@ -3,6 +3,7 @@ from rest_framework_simplejwt import views as jwt_views
 
 from api.views.api import (
     Board,
+    EmailAPI,
 )
 from api.views.user import (
     RegisterAPI,
@@ -11,6 +12,7 @@ from api.views.user import (
 
 urlpatterns = [
     path('v1/boards', Board.as_view()),
+    path('v1/emails', EmailAPI.as_view())
 ]
 
 urlpatterns += [
