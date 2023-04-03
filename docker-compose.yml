@@ -1,39 +1,61 @@
 version: '3'
 
 services:
-    postgres:
-        image: postgres:14-alpine
-        container_name: postgres
-        ports:
-            - '3307:3306'
-        volumes:
-            - ./db/conf.d:/etc/mysql/conf.d
-            - ./db/data:/var/lib/mysql
-            - ./db/initdb.d:/docker-entrypoint-initdb.d
-        env_file: .compose_env
-        environment:
-            TZ: Asia/Seoul
-        restart: always
-        networks:
-            - web
-    redis:
-        image: redis
-        container_name: redis
-        ports:
-            - '6379:6379'
-    backend:
+    web:
         build: .
-        container_name: backend
-        command: gunicorn --bind 0.0.0.0:8000 config.asgi:application -w 3 -k uvicorn.workers.UvicornWorker
+        command: python manage.py runserver 0.0.0.0:8000
         volumes:
             - ./static:/usr/src/app/staticfiles
         ports:
             - '8000:8000'
         depends_on:
-            - postgres
-        networks:
-            - web
+            -   db
+    db:
+        image: postgres:14-alpine
+        volumes:
+            -   ../postgres_data:/var/lib/postgresql/data
+        env_file: .compose_env
+        environment:
+            POSTGRES_USER: hello_django
+            POSTGRES_PASSWORD: hello_django
+            POSTGRES_DB: hello_django_dev
+            TZ: Asia/Seoul
 
-networks:
-    web:
+
+#services:
+#    postgres:
+#        image: postgres:14-alpine
+#        container_name: postgres
+#        ports:
+#            - '3307:3306'
+#        volumes:
+#            - ./db/conf.d:/etc/mysql/conf.d
+#            - ./db/data:/var/lib/mysql
+#            - ./db/initdb.d:/docker-entrypoint-initdb.d
+#        env_file: .compose_env
+#        environment:
+#            TZ: Asia/Seoul
+#        restart: always
+#        networks:
+#            - web
+#    redis:
+#        image: redis
+#        container_name: redis
+#        ports:
+#            - '6379:6379'
+#    backend:
+#        build: .
+#        container_name: backend
+#        command: gunicorn --bind 0.0.0.0:8000 config.asgi:application -w 3 -k uvicorn.workers.UvicornWorker
+#        volumes:
+#            - ./static:/usr/src/app/staticfiles
+#        ports:
+#            - '8000:8000'
+#        depends_on:
+#            - postgres
+#        networks:
+#            - web
+#
+#networks:
+#    web:
 
