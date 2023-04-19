@@ -57,7 +57,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 
     # ============= custom middleware ==============
-    "middleware.exception_handler.ExceptionHandlerMiddleware",
+    "middleware.response.ResponseFormatter",
 ]
 
 ROOT_URLCONF = "config.urls"

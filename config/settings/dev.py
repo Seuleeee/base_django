@@ -4,6 +4,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost']
 
+CORS_ORIGIN_REGEX_WHITELIST = [
+    r"^http://localhost(:\d+)?$",
+]
+
 INSTALLED_APPS += [
     'debug_toolbar',
 ]

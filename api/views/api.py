@@ -39,8 +39,7 @@ class EmailAPI(views.APIView):
         )
 
 
-def get_status(request, task_id: str) -> Response:
-    print("도착도착도착도착")
+def get_status(request, task_id: str) -> JsonResponse:
     task_result = AsyncResult(task_id)
     result = {
         "task_id": task_id,
@@ -48,3 +47,4 @@ def get_status(request, task_id: str) -> Response:
         "task_result": task_result.result,
     }
     return JsonResponse(result, status=200)
+
