@@ -1,3 +1,5 @@
+import json
+
 from django.http import HttpRequest
 from django.http import JsonResponse
 from rest_framework import (
@@ -7,19 +9,16 @@ from rest_framework.response import Response
 
 from celery.result import AsyncResult
 
+from api.services.board import BoardService
 from api.tasks import send_email_task, test_task
 
 
 class Board(views.APIView):
 
-    def get(self, request: HttpRequest):
-        task = test_task.delay(2, 5)
-        return Response(
-            {
-                "task_id": task.id,
-            },
-            status=202,
-        )
+    def get(self, request: HttpRequest, pk: int) -> Response:
+        bs = BoardService()
+        result = bs.get(pk)
+        return Response(result)
 
 
 class EmailAPI(views.APIView):

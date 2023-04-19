@@ -12,7 +12,7 @@ from api.views.user import (
 
 
 urlpatterns = [
-    path('v1/boards', Board.as_view()),
+    path('v1/boards/<int:pk>', Board.as_view()),
     path('v1/emails', EmailAPI.as_view()),
     path('v1/celery/tasks/<task_id>', get_status, name='get_status'),
 ]

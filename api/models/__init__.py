@@ -1,1 +1,1 @@
-from api.models.board import SampleBoard
+from api.models.board import SampleBoardModel

@@ -8,6 +8,7 @@ class BaseModel(models.Model):
     기본 Django Model
     1. primary_key 를 AutoIncrement로 지정
     2. 상속 받은 Model의 Class Name을 snake case 로 변환하여, db_table로 지정
+        - class name 만 뒤에 붙은 Model은 무시
     """
     id = models.AutoField(primary_key=True)
 
@@ -16,7 +17,10 @@ class BaseModel(models.Model):
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
-        cls.Meta.db_table = re.sub(r"(?<!^)(?=[A-Z])", '_', cls.__name__).lower()
+        class_name: str = cls.__name__
+        class_name: str = re.sub(re.compile(r'Model$', re.IGNORECASE), '', class_name).strip().replace(' ', '_')
+        class_name = re.sub(r"(?<!^)(?=[A-Z])", '_', class_name).lower()
+        cls.Meta.db_table = class_name
 
 
 class TimestampedModel(models.Model):

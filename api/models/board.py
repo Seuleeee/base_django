@@ -7,6 +7,6 @@ from api.models.base import (
 )
 
 
-class SampleBoard(BaseModel, TimestampedUserModel):
+class SampleBoardModel(TimestampedUserModel, BaseModel):
     title = models.CharField(max_length=100)
     content = models.TextField()
