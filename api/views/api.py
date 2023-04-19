@@ -46,5 +46,6 @@ def get_status(request, task_id: str) -> JsonResponse:
         "task_status": task_result.status,
         "task_result": task_result.result,
     }
+
     return JsonResponse(result, status=200)
 

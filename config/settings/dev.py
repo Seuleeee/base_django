@@ -26,3 +26,17 @@ DATABASES = {
         "PORT": env('DEV_DB_PORT'),
     }
 }
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+        }
+    },
+    "USE_SESSION_AUTH": False,
+    "APIS_SORTER": "alpha",
+    "OPERATIONS_SORTER": "method",
+    "TAGS_SORTER": "alpha",
+}
