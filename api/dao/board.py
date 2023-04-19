@@ -1,6 +1,6 @@
-from api.models import Board
+from api.models.board import SampleBoard
 
 
 class BoardDao:
     def create(self, params):
-        return Board.objects.create(**params)
+        return SampleBoard.objects.create(**params)
