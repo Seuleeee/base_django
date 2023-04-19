@@ -1,11 +1,14 @@
+import logging
+import traceback
 from http.client import responses
-import json
-
 from dataclasses import dataclass
-from typing import Dict
 
 from django.http import JsonResponse
 from rest_framework.status import is_success
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class ResponseFormatter:
@@ -51,6 +54,7 @@ class ResponseFormatter:
         EndPoint 진입 이후의 Exception 만 적용 됨.
         """
 
+        logger.exception(traceback.format_exc())
         if exception:
             exception.detail = exception.detail if hasattr(exception, "detail") else exception
 
