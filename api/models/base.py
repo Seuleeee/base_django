@@ -16,11 +16,12 @@ class BaseModel(models.Model):
         abstract = True
 
     def __init_subclass__(cls, **kwargs):
-        super().__init_subclass__(**kwargs)
-        class_name: str = cls.__name__
-        class_name: str = re.sub(re.compile(r'Model$', re.IGNORECASE), '', class_name).strip().replace(' ', '_')
-        class_name = re.sub(r"(?<!^)(?=[A-Z])", '_', class_name).lower()
-        cls.Meta.db_table = class_name
+        cls.Meta.db_table = cls._set_table_name(cls.__name__)
+
+    @staticmethod
+    def _set_table_name(raw_name: str) -> str:
+        class_name: str = re.sub(re.compile(r'Model$', re.IGNORECASE), '', raw_name).strip().replace(' ', '_')
+        return re.sub(r"(?<!^)(?=[A-Z])", '_', class_name).lower()
 
 
 class TimestampedModel(models.Model):
