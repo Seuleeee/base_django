@@ -1,11 +1,10 @@
-import json
-
 from django.http import HttpRequest
 from django.http import JsonResponse
 from rest_framework import (
     views,
 )
 from rest_framework.response import Response
+from drf_yasg.utils import swagger_auto_schema
 
 from celery.result import AsyncResult
 
@@ -14,7 +13,12 @@ from api.tasks import send_email_task, test_task
 
 
 class Board(views.APIView):
+    def post(self, request: HttpRequest, pk: int) -> Response:
+        bs = BoardService()
+        result = bs.get(pk)
+        return Response(result)
 
+    @swagger_auto_schema()
     def get(self, request: HttpRequest, pk: int) -> Response:
         bs = BoardService()
         result = bs.get(pk)
