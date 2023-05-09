@@ -4,25 +4,13 @@ services:
     backend:
         build: .
         container_name: backend
-        command: gunicorn --bind 0.0.0.0:8000 conf.wsgi:application
+        command: gunicorn --bind 0.0.0.0:8000 config.wsgi:application
         volumes:
             - ./static:/usr/src/app/staticfiles
         ports:
             - '8000:8000'
-        depends_on:
-            - postgres
         networks:
             - web
-    db:
-        image: postgres:14-alpine
-        volumes:
-            -   ../postgres_data:/var/lib/postgresql/data
-        env_file: .compose_env
-        environment:
-            POSTGRES_USER: hello_django
-            POSTGRES_PASSWORD: hello_django
-            POSTGRES_DB: hello_django_dev
-            TZ: Asia/Seoul
     redis:
         image: redis
         container_name: redis
