@@ -9,6 +9,9 @@ from api.views.api import (
 from api.views.user import (
     RegisterAPI,
 )
+from api.views.sample import (
+    SampleFileView,
+)
 
 
 urlpatterns = [
@@ -21,4 +24,8 @@ urlpatterns += [
     path('v1/register', RegisterAPI.as_view(), name='Auth'),
     path('v1/token', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('v1/token/refresh', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+]
+
+urlpatterns += [
+    path('v1/sample/file', SampleFileView.as_view(), name='SampleFile'),
 ]
