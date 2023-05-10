@@ -65,10 +65,14 @@
 
 3. 실행
    ```shell
+   # Linux / Mac
+    python manage.py runserver 0.0.0.0:8000
+   
+   # Windows
     python .\manage.py runserver 0.0.0.0:8000
    ```
    
-#### Production
+### Production
 1. 환경 설정
    - .env.prod 파일 추가 : config/settings/.env.prod
        ```text
