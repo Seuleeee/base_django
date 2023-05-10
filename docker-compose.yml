@@ -2,6 +2,8 @@ version: '3'
 
 services:
     backend:
+        env_file:
+            - ./config/settings/.env.prod
         build: .
         container_name: backend
         command: gunicorn --bind 0.0.0.0:8000 config.wsgi:application

@@ -16,17 +16,6 @@ MIDDLEWARE += [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
-DATABASES = {
-    "default": {
-        "ENGINE": env('DEV_DB_ENGINE'),
-        "NAME": env('DEV_DB_NAME'),
-        "USER": env('DEV_DB_USER'),
-        "PASSWORD": env('DEV_DB_PASSWORD'),
-        "HOST": env('DEV_DB_HOST'),
-        "PORT": env('DEV_DB_PORT'),
-    }
-}
-
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {
         "Bearer": {
