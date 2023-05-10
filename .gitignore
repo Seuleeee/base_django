@@ -133,7 +133,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.compose_env
 .venv
 env/
 venv/
@@ -365,6 +364,5 @@ $RECYCLE.BIN/
 /docker-compose.yml
 /static/
 /db/data/
-/.compose_env
 /config/settings/.env
 /config/settings/.env.prod
