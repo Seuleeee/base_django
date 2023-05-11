@@ -10,6 +10,7 @@ from api.models.base import (
 )
 
 
+# TODO: 아래는 예시 입니다. 원하는 경로를 Custom 해서 사용 하세요.
 def get_upload_to(instance: SampleFileModel, file_name: str):
     """
     File Upload 시 저장 될 경로를 지정 하는 메소드
