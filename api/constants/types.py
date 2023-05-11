@@ -21,7 +21,7 @@ class DocumentFileTypesEnum(str, BaseEnum):
     DOCX: str = "docx"
     PPT: str = "ppt"
     PPTX: str = "pptx"
-    PDF: str = "PDF"
+    PDF: str = "pdf"
 
 
 class VideoFileTypesEnum(str, BaseEnum):
