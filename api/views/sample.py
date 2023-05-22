@@ -1,14 +1,9 @@
 """
 각종 View에 대한 Sample
 """
-import json
-
 from django.http import (
     HttpRequest,
-    JsonResponse,
 )
-from django.core import serializers
-from rest_framework.pagination import PageNumberPagination
 
 from rest_framework.views import (
     APIView,
@@ -79,8 +74,6 @@ class SampleAPIView(APIView):
         단순 예시 이기에 Single, Multi Value 관계없이 Iterable한 객체로 반환 하고 있습니다.
 
         RestfulAPI의 URI Parameter로 pk 전달 유무에 따라 Single, Multi를 결정합니다.
-
-        아래 TODO 참고하여, 적절하게 수정하여 사용하십시오.
         """
         if pk is not None:
             instance = sample_repo.get(pk=pk)
