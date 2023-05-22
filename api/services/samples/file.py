@@ -10,7 +10,7 @@ from typing import (
 from django.db import transaction
 from django.http import QueryDict, HttpRequest
 
-from api.serializers.file_serializer import FileSerializer
+from api.serializers.sample_serializer import SampleFileSerializer
 from utils.file import (
     get_file_extension,
     get_file_type,
@@ -26,12 +26,12 @@ class SampleFileService:
         serializers = self._get_file_serializers(files=files)
         self._save(serializers=serializers)
 
-    def _get_file_serializers(self, *, files: QueryDict) -> List[FileSerializer]:
+    def _get_file_serializers(self, *, files: QueryDict) -> List[SampleFileSerializer]:
         """
         파일 개수(단, 복수) 와 관계 없이 Serializers 생성
         """
-        serializers: List[FileSerializer] = [
-            FileSerializer(data=FileInputData(
+        serializers: List[SampleFileSerializer] = [
+            SampleFileSerializer(data=FileInputData(
                 file=file.name,
                 file_path=file,
                 extension=get_file_extension(file.name),
@@ -42,7 +42,7 @@ class SampleFileService:
         return serializers
 
     @transaction.atomic
-    def _save(self, *, serializers: List[FileSerializer]):
+    def _save(self, *, serializers: List[SampleFileSerializer]):
         for serializer in serializers:
             if serializer.is_valid():
                 serializer.save()

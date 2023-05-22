@@ -29,7 +29,13 @@ def get_upload_to(instance: SampleFileModel, file_name: str):
 
 
 class SampleFileModel(BaseModel):
+    """ File 업로드 예시용 Samle Model """
     file = models.CharField(max_length=256, null=False)
     file_path = models.FileField(upload_to=get_upload_to, blank=False, null=False, default="")
     extension = models.CharField(max_length=256, null=False)
     type = models.CharField(max_length=10, null=False)
+
+
+class SampleModel(BaseModel):
+    """ DRF의 다양한 View에 적용 할 Sample Model """
+    column = models.CharField(max_length=10, null=False)
