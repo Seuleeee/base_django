@@ -35,5 +35,6 @@ router.register(r'samples', SampleModelViewSet)
 
 urlpatterns += [
     path('', include(router.urls)),
-    path('samples/file', SampleFileView.as_view(), name='SampleFile'),
+    path('samples/file', SampleFileView.as_view(), name='sample_file'),
+    path('samples/file/<int:pk>', SampleFileView.as_view(), name='sample_file'),
 ]

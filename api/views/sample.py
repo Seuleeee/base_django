@@ -21,6 +21,21 @@ class SampleFileView(APIView):
         SampleFileService().upload(request)
         return Response(data="Created!", status=201)
 
+    def get(self, request: HttpRequest, pk=None):
+        if pk is not None:
+            result = SampleFileService().get(pk=pk)
+        else:
+            result = SampleFileService().get_multi()
+        return Response(data=result, status=200)
+
+    def put(self, request: HttpRequest, pk: int):
+        result = SampleFileService().update(request=request, pk=pk)
+        return Response(data=result, status=200)
+
+    def delete(self, request: HttpRequest, pk: int):
+        result = SampleFileService().delete(pk=pk)
+        return Response(data=result, status=204)
+
 
 class SampleModelViewSet(ModelViewSet):
     """

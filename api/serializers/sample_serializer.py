@@ -19,7 +19,7 @@ Sample API 적용을 위한 Serializer 모음
 class SampleFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = SampleFileModel
-        fields = ("file", "file_path", "extension", "type")
+        fields = ("id", "file", "file_path", "extension", "type")
 
 
 class SampleSerializer(serializers.ModelSerializer):

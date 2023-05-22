@@ -15,6 +15,9 @@ from utils.file import (
     get_file_extension,
     get_file_type,
 )
+from api.repos.sample import (
+    sample_file_repo,
+)
 
 
 class SampleFileService:
@@ -49,6 +52,35 @@ class SampleFileService:
             else:
                 print(traceback.format_exc())
                 raise ValueError("파일 업로드 실패!")
+
+    def get_multi(self):
+        instance = sample_file_repo.get_multi()
+        serializer = SampleFileSerializer(instance, many=True)
+        return serializer.data
+
+    def get(self, pk: int):
+        data = sample_file_repo.get(pk=pk)
+        serializer = SampleFileSerializer(data)
+        return serializer.data
+
+    def update(self, request: HttpRequest, pk: int):
+        instance = sample_file_repo.get(pk=pk)
+        file = request.FILES.get(key='file', default=None)
+        serializer = SampleFileSerializer(instance, data=FileInputData(
+                file=file.name,
+                file_path=file,
+                extension=get_file_extension(file.name),
+                type=get_file_type(file.name),
+            ).__dict__)
+        if serializer.is_valid():
+            serializer.save()
+            return serializer.data
+        else:
+            print("Error!", traceback.format_exc())
+
+    def delete(self, pk: int):
+        instance = sample_file_repo.get(pk=pk)
+        instance.delete()
 
 
 @dataclass
