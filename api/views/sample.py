@@ -27,10 +27,12 @@ from utils.pagination import PaginationUtil
 
 
 class SampleFileView(APIView):
+    @swagger_auto_schema(tags=["sample-file"])
     def post(self, request: HttpRequest):
         SampleFileService().upload(request)
         return Response(data="Created!", status=201)
 
+    @swagger_auto_schema(tags=["sample-file"])
     def get(self, request: HttpRequest, pk: int=None):
         if pk is not None:
             result = SampleFileService().get(pk=pk)
@@ -38,10 +40,12 @@ class SampleFileView(APIView):
             result = SampleFileService().get_multi()
         return Response(data=result, status=200)
 
+    @swagger_auto_schema(tags=["sample-file"])
     def put(self, request: HttpRequest, pk: int):
         result = SampleFileService().update(request=request, pk=pk)
         return Response(data=result, status=200)
 
+    @swagger_auto_schema(tags=["sample-file"])
     def delete(self, request: HttpRequest, pk: int):
         result = SampleFileService().delete(pk=pk)
         return Response(data=result, status=204)
