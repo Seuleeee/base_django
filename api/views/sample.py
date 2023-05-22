@@ -23,6 +23,7 @@ from api.repos.sample import sample_repo
 from api.services.samples.file import SampleFileService
 from api.models.sample import SampleModel
 from api.serializers.sample_serializer import SampleSerializer
+from utils.pagination import PaginationUtil
 
 
 class SampleFileView(APIView):
@@ -84,11 +85,8 @@ class SampleAPIView(APIView):
             return Response(serializer.data)
         else:
             instance = sample_repo.get_multi()
-            paginator = PageNumberPagination()
-            paginated_queryset = paginator.paginate_queryset(instance, request)
-            serializer = SampleSerializer(paginated_queryset, many=True)
-            paginated_data = paginator.get_paginated_response(serializer.data)
-            return paginated_data
+            paginator = PaginationUtil(queryset=instance, request=request, page_size=5)
+            return paginator.get_response(serializer=SampleSerializer)
 
     @swagger_auto_schema(request_body=SampleSerializer, tags=["sample-apiview"])
     def put(self, request: HttpRequest, pk: int):
