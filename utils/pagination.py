@@ -1,4 +1,5 @@
 import inspect
+from collections import OrderedDict
 from typing import (
     List,
     Dict,
@@ -59,7 +60,7 @@ class PaginationUtil(PageNumberPagination):
         """
         paginated_queryset = self.paginate_queryset(self._queryset, self._request)
         serialized_data = self._get_serialized_data(paginated_queryset=paginated_queryset, serializer=serializer)
-        return self.get_paginated_response(serialized_data)
+        return self._build_response(serialized_data=serialized_data)
 
     def _get_serialized_data(
         self,
@@ -90,8 +91,8 @@ class PaginationUtil(PageNumberPagination):
         else:
             return self._get_serialized_data_from_queryset(queryset=paginated_queryset)
 
+    @staticmethod
     def _get_serialized_data_from_queryset(
-        self,
         *,
         queryset: QuerySet,
     ) -> List[Dict[str, Any]]:
@@ -116,3 +117,22 @@ class PaginationUtil(PageNumberPagination):
                 }
                 for obj in queryset]
 
+    def _build_response(self, *, serialized_data: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        pagination 된 응답 딕셔너리를 구성합니다.
+
+        Args:
+            serialized_data (List[Dict[str, Any]]): 응답에 포함할 직렬화된 데이터.
+
+        Returns:
+            Dict[str, Any]: 페이지네이션된 응답 딕셔너리로, count, 페이지 수, 페이지 크기, 다음 링크, 이전 링크, 그리고 직렬화된 결과를 포함합니다.
+            - TODO: Dictionary에 사용한 Key 이름은 Client 측과 협의하여 변경해 사용하시면 됩니다.
+        """
+        return {
+            'count': self.page.paginator.count,
+            'num_pages': self.page.paginator.num_pages,
+            'page_size': self.page_size,
+            'next': self.get_next_link(),
+            'previous': self.get_previous_link(),
+            'results': serialized_data
+        }

@@ -81,12 +81,12 @@ class SampleAPIView(APIView):
         if pk is not None:
             instance = sample_repo.get(pk=pk)
             # TODO: Single Instance 반환 방법 수정하여 사용하세요.
-            serializer = SampleSerializer(instance)
-            return Response(serializer.data)
+            result = SampleSerializer(instance).data
         else:
             instance = sample_repo.get_multi()
             paginator = PaginationUtil(queryset=instance, request=request, page_size=5)
-            return paginator.get_response(serializer=SampleSerializer)
+            result = paginator.get_response()
+        return Response(result)
 
     @swagger_auto_schema(request_body=SampleSerializer, tags=["sample-apiview"])
     def put(self, request: HttpRequest, pk: int):
