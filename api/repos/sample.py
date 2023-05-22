@@ -6,7 +6,7 @@ from api.repos.base import BaseRepo
 
 
 class SampleRepo(BaseRepo[SampleModel]):
-    def create(self, params):
+    def example(self, params):
         pass
 
 

@@ -4,6 +4,8 @@ from api.models.base import BaseModel
 
 
 ModelType = TypeVar("ModelType", bound=BaseModel)
+CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
+UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 
 
 class BaseRepo(Generic[ModelType]):
@@ -13,9 +15,18 @@ class BaseRepo(Generic[ModelType]):
         """
         self.model = model
 
+    def create(self, *, create_data: CreateSchemaType):
+        """ Unpacking 가능한 Dictionary Type """
+        instance = self.model.objects.create(**create_data)
+        return instance
+
     def get(self, pk: Any) -> Optional[ModelType]:
         """ Model 을 직렬화 하지 않고 반환 """
-        return self.model.objects.get(pk=pk)
+        try:
+            instance = self.model.objects.get(pk=pk)
+            return instance
+        except self.model.DoesNotExist:
+            raise self.model.DoesNotExist
 
     def get_multi(self, **kwargs) -> Optional[ModelType]:
         """
@@ -28,3 +39,17 @@ class BaseRepo(Generic[ModelType]):
         """
         return self.model.objects.filter(**kwargs)
 
+    def update(self, *, updated_data: CreateSchemaType, pk: int):
+        """ Unpacking 가능한 Dictionary Type """
+        instance = self.get(pk=pk)
+        for field, value in updated_data.items():
+            setattr(instance, field, value)
+
+        instance.save()
+
+        return instance
+
+    def delete(self, *, pk: int):
+        instance = self.get(pk=pk)
+        instance.delete()
+        return instance

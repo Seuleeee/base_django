@@ -16,6 +16,7 @@ from api.views.user import (
 from api.views.sample import (
     SampleFileView,
     SampleModelViewSet,
+    SampleAPIView,
 )
 
 urlpatterns = [
@@ -37,4 +38,10 @@ urlpatterns += [
     path('', include(router.urls)),
     path('samples/file', SampleFileView.as_view(), name='sample_file'),
     path('samples/file/<int:pk>', SampleFileView.as_view(), name='sample_file'),
+]
+
+
+urlpatterns += [
+    path('samples/api-view', SampleAPIView.as_view(), name='sample_api_view'),
+    path('samples/api-view/<int:pk>', SampleAPIView.as_view(), name='sample_api_view'),
 ]
