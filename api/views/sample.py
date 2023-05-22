@@ -8,6 +8,7 @@ from django.http import (
     JsonResponse,
 )
 from django.core import serializers
+from rest_framework.pagination import PageNumberPagination
 
 from rest_framework.views import (
     APIView,
@@ -78,14 +79,16 @@ class SampleAPIView(APIView):
         """
         if pk is not None:
             instance = sample_repo.get(pk=pk)
-            serializer = serializers.serialize('json', [instance, ])
             # TODO: Single Instance 반환 방법 수정하여 사용하세요.
-            serialized_data = json.loads(serializer)
+            serializer = SampleSerializer(instance)
+            return Response(serializer.data)
         else:
             instance = sample_repo.get_multi()
-            serializer = serializers.serialize('json', instance)
-            serialized_data = json.loads(serializer)
-        return Response(serialized_data)
+            paginator = PageNumberPagination()
+            paginated_queryset = paginator.paginate_queryset(instance, request)
+            serializer = SampleSerializer(paginated_queryset, many=True)
+            paginated_data = paginator.get_paginated_response(serializer.data)
+            return paginated_data
 
     @swagger_auto_schema(request_body=SampleSerializer, tags=["sample-apiview"])
     def put(self, request: HttpRequest, pk: int):
