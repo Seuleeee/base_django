@@ -15,9 +15,9 @@ class BaseRepo(Generic[ModelType]):
         """
         self.model = model
 
-    def create(self, *, create_data: CreateSchemaType):
+    def create(self, *, created_data: CreateSchemaType):
         """ Unpacking 가능한 Dictionary Type """
-        instance = self.model.objects.create(**create_data)
+        instance = self.model.objects.create(**created_data)
         return instance
 
     def get(self, pk: Any) -> Optional[ModelType]:

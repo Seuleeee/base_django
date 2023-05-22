@@ -16,6 +16,7 @@ from rest_framework.viewsets import (
     ModelViewSet,
 )
 from rest_framework.response import Response
+from drf_yasg.utils import swagger_auto_schema
 
 from api.repos.sample import sample_repo
 from api.services.samples.file import SampleFileService
@@ -58,13 +59,14 @@ class SampleModelViewSet(ModelViewSet):
 
 class SampleAPIView(APIView):
     """ CRUD시, Serializer를 활용하지 않고 ORM을 사용하는 예제 """
+    @swagger_auto_schema(request_body=SampleSerializer, tags=["sample-apiview"])
     def post(self, request: HttpRequest):
-        data = {
-            "column": "test"
-        }
-        sample_repo.create(create_data=data)
+        # TODO: 원하는 Data 형태로 가공 하여 사용하세요.
+        data = request.data
+        sample_repo.create(created_data=data)
         return Response("Success!", status=201)
 
+    @swagger_auto_schema(tags=["sample-apiview"])
     def get(self, request: HttpRequest, pk: int=None):
         """
         ORM을 사용하여, 결과 값 Response 예제 입니다.
@@ -85,13 +87,14 @@ class SampleAPIView(APIView):
             serialized_data = json.loads(serializer)
         return Response(serialized_data)
 
+    @swagger_auto_schema(request_body=SampleSerializer, tags=["sample-apiview"])
     def put(self, request: HttpRequest, pk: int):
-        data = {
-            "column": "test22"
-        }
+        # TODO: 원하는 Data 형태로 가공 하여 사용하세요.
+        data = request.data
         sample_repo.update(updated_data=data, pk=pk)
         return Response("Success!", status=200)
 
+    @swagger_auto_schema(tags=["sample-apiview"])
     def delete(self, request: HttpRequest, pk: int):
         sample_repo.delete(pk=pk)
         return Response("Deleted!", status=204)

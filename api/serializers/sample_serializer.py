@@ -23,6 +23,7 @@ class SampleFileSerializer(serializers.ModelSerializer):
 
 
 class SampleSerializer(serializers.ModelSerializer):
+    column = serializers.CharField(help_text="테스트용")
     class Meta:
         model = SampleModel
         fields = ("id", "column",)
