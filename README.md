@@ -68,8 +68,16 @@
    # Linux / Mac
     python manage.py runserver 0.0.0.0:8000
    
+    celery -A config worker -l info
+    celery -A config beat -l info
+
+   
    # Windows
     python .\manage.py runserver 0.0.0.0:8000
+   
+    celery -A config worker -l info -P gevent
+    celery -A config beat -l info
+
    ```
    
 ### Production
@@ -77,13 +85,13 @@
    - .env.prod 파일 추가 : config/settings/.env.prod
        ```text
        SECRET_KEY="hashed secret key"
-       DB_ENGINE=django.db.backends.postgresql or django.db.backends.mysql
-       DB_NAME=db_name
-       DB_USER=user
-       DB_PASSWORD=user_password
-       DB_HOST=localhost
-       DB_PORT=3306
-
+       DB_ENGINE=django.db.backends.postgresql
+       DB_NAME=postgres
+       DB_USER=postgres
+       DB_PASSWORD=password
+       DB_HOST=db
+       DB_PORT=5432
+    
        EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
        EMAIL_HOST='smtp.gmail.com' (사용하는 HOST를 입력해주세요.)
        EMAIL_HOST_USER='example@gmail.com'
@@ -91,7 +99,12 @@
        EMAIL_ADMIN='example@gmail.com'
        EMAIL_PORT=587
     
-       CELERY_BROKER_URL='redis://localhost:6379/0'
+       CELERY_BROKER_URL=redis://redis:6379/0
+    
+       POSTGRES_USER=postgres
+       POSTGRES_PASSWORD=password
+       POSTGRES_DB=postgres
+
        ```
 
 2. 실행

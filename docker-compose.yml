@@ -6,18 +6,62 @@ services:
             - ./config/settings/.env.prod
         build: .
         container_name: backend
-        command: gunicorn --bind 0.0.0.0:8000 config.wsgi:application
+        command:
+            - sh
+            - -c
+            - |
+                python manage.py makemigrations api && python manage.py migrate && gunicorn --bind 0.0.0.0:8000 config.wsgi:application
         volumes:
             - ./static:/usr/src/app/staticfiles
         ports:
             - '8000:8000'
         networks:
             - web
+        depends_on:
+            - db
+            - redis
+    celery-worker:
+        build: .
+        command: celery -A config worker --loglevel=info
+        env_file:
+          - ./config/settings/.env.prod
+        networks:
+            - web
+        depends_on:
+          - db
+          - redis
+          - backend
+
+    celery-beat:
+        build: .
+        command: celery -A config beat --loglevel=info
+        env_file:
+          - ./config/settings/.env.prod
+        networks:
+            - web
+        depends_on:
+          - db
+          - redis
+          - backend
     redis:
         image: redis
         container_name: redis
         ports:
             - '6379:6379'
+        networks:
+            - web
+    db:
+        image: postgres:13.0-alpine
+        volumes:
+            - postgres_data:/var/lib/postgresql/data/
+        env_file:
+            - ./config/settings/.env.prod
+        networks:
+            - web
+        ports:
+            - '5432:5432'
 
 networks:
     web:
+volumes:
+  postgres_data:

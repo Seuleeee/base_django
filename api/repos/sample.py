@@ -15,6 +15,5 @@ class SampleFileRepo(BaseRepo[SampleFileModel]):
         pass
 
 
-
 sample_repo = SampleRepo(SampleModel)
 sample_file_repo = SampleFileRepo(SampleFileModel)
