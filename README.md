@@ -1,7 +1,7 @@
 ﻿# BASE Django Backend
 
 * 프로젝트 마다 Django, Django Rest Framework, 각종 패키지 설치가 귀찮았습니다.
-* DB 연동, Swagger Setting, Project Structure 변경이 힘들었습니다.
+* DB 연동, Swagger Setting, Project Structure 구축 공수가 프로젝트 마다 발생 합니다.
 * 그리하여, Django - MariaDB - Redis 를 동시에 사용 가능한 Project Base를 만들었습니다.
 
 
