@@ -60,6 +60,14 @@ services:
             - web
         ports:
             - '5432:5432'
+    prometheus:
+        image: prom/prometheus
+        volumes:
+            - ./prometheus/:/etc/prometheus/
+        networks:
+            - web
+        ports:
+            - "9090:9090"
 
 networks:
     web:

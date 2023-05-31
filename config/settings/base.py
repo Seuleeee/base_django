@@ -46,10 +46,12 @@ INSTALLED_APPS = [
     "django_celery_beat",
     "django_celery_results",
     "drf_yasg",
+    "django_prometheus",
     "api",
 ]
 
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -60,6 +62,7 @@ MIDDLEWARE = [
 
     # ============= custom middleware ==============
     "middleware.response.ResponseFormatter",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
