@@ -158,27 +158,32 @@ LOGGING = {
             'formatter': 'simple',
             'stream': 'ext://sys.stdout',
         },
-        'logfile': {
+        'log_file': {
             'class': 'logging.FileHandler',
-            'filters': ['require_debug_false'],
             'level': 'INFO',
             'formatter': 'simple',
+            'encoding': 'utf-8',
             'filename': os.path.join(BASE_DIR, 'logs/server.log'),
         },
         'error_file': {
             'class': 'logging.FileHandler',
-            'filters': ['require_debug_false'],
+            'filters': ['require_debug_true'],
             'level': 'ERROR',
-            'formatter': 'simple',
+            'encoding': 'utf-8',
             'filename': os.path.join(BASE_DIR, 'logs/error.log'),
         },
     },
     'loggers': {
-        'django.db.backends': {
-            'handlers': ['console', ],
+        'myapp_dev': {
+            'handlers': ['console', 'log_file', 'error_file', 'gray_log'],
             'level': 'DEBUG',
             'propagate': False,
-        }
+        },
+        'myapp_prod': {
+            'handlers': ['log_file', 'error_file',],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
     },
 }
 

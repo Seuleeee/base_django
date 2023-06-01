@@ -24,7 +24,7 @@ from drf_yasg import openapi
 urlpatterns = [
     path('api/', include(('api.urls', 'api'))),
     path("admin/", admin.site.urls),
-    path('', include('django_prometheus.urls')),
+    path('prometheus/', include('django_prometheus.urls')),
 ]
 
 schema_view = get_schema_view(

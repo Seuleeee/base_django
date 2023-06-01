@@ -1,13 +1,15 @@
+from __future__ import annotations
 import logging
 import traceback
 from http.client import responses
 from dataclasses import dataclass
 
 from django.http import JsonResponse
+from django.utils import timezone
 from rest_framework.status import is_success
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('myapp_dev')
 logger.setLevel(logging.DEBUG)
 
 
@@ -53,8 +55,9 @@ class ResponseFormatter:
         """
         EndPoint 진입 이후의 Exception 만 적용 됨.
         """
-
-        logger.exception(traceback.format_exc())
+        tb = traceback.format_exc()
+        CustomLogging(request=request).log_exception(tb=tb)
+        # logger.exception(traceback.format_exc())
         if exception:
             exception.detail = exception.detail if hasattr(exception, "detail") else exception
 
@@ -73,6 +76,35 @@ class ResponseFormatter:
         else:
             result = ExceptionResponse
         return result
+
+
+class CustomLogging:
+    def __init__(self, *, request):
+        self.logger = logging.getLogger('myapp_dev')
+        self.request = request
+    def log_exception(self, *, tb):
+        logger.error(f'{self.get_log_prefix(self.request)}\nTraceback: {tb}')
+
+    def get_client_ip(self, request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
+    def get_log_prefix(self, request):
+        user = request.user.username if request.user.is_authenticated else 'Anonymous'
+        view_name = request.resolver_match.view_name
+        api_name = request.path
+        ip_address = self.get_client_ip(request)
+
+        return f'[API:{api_name}] | [User:{user}] | [ClientIP:{ip_address}] | [View:{view_name}]'
+
+    def generate_readable_timestamp(self):
+        now = timezone.localtime(timezone.now())
+        timestamp = now.strftime('%Y-%m-%d-%H-%M-%S-%f')[:-3]  # 마지막 3자리는 밀리초를 의미하므로 제외
+
+        return timestamp
 
 
 @dataclass(frozen=True)

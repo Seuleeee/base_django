@@ -5,6 +5,8 @@ from django.urls import (
 from rest_framework_simplejwt import views as jwt_views
 from rest_framework.routers import DefaultRouter
 
+from django_prometheus import exports
+
 from api.views.api import (
     Board,
     EmailAPI,
