@@ -14,6 +14,8 @@ from pathlib import Path
 import environ
 from datetime import timedelta
 
+from django.core.exceptions import ImproperlyConfigured
+
 
 env = environ.Env(
     DEBUG=(bool, True)
@@ -133,6 +135,26 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+try:
+    env('GRAYLOG_ENVIRONMENT')
+except (KeyError, ImproperlyConfigured):
+    # Set graylog settings to empty dict if not present in env.ini
+    graylog_settings = {}
+else:
+    graylog_settings = {
+        'pygelf': {
+            'static_fields': {'_app': env('GRAYLOG_APP'),
+                              '_app_env': env('GRAYLOG_ENVIRONMENT')},
+            'class': 'log_utils.logging_utils.CustomGelfHttpHandler',
+            'debug': bool(env('GRAYLOG_DEBUG')),
+            'include_extra_fields': bool(env('GRAYLOG_INCLUDE_EXTRA_FIELDS')),
+            'host': env('GRAYLOG_HOST'),
+            'port': env('GRAYLOG_PORT'),
+            'compress': bool(env('GRAYLOG_COMPRESS')),
+        }
+    }
+
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -172,10 +194,19 @@ LOGGING = {
             'encoding': 'utf-8',
             'filename': os.path.join(BASE_DIR, 'logs/error.log'),
         },
+        **graylog_settings,
     },
     'loggers': {
-        'myapp_dev': {
-            'handlers': ['console', 'log_file', 'error_file', 'gray_log'],
+        'django.db.backends': {
+            'handlers': ['console', 'log_file'] + (['pygelf'] if graylog_settings else []),
+            'level': 'ERROR',
+        },
+        'django': {
+            'handlers': ['console', 'log_file'] + (['pygelf'] if graylog_settings else []),
+            'level': 'INFO',
+        },
+        'base_django_dev': {
+            'handlers': ['console', 'log_file', 'error_file']+ (['pygelf'] if graylog_settings else []),
             'level': 'DEBUG',
             'propagate': False,
         },

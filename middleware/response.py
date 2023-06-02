@@ -1,5 +1,6 @@
 from __future__ import annotations
 import logging
+import sys
 import traceback
 from http.client import responses
 from dataclasses import dataclass
@@ -7,10 +8,6 @@ from dataclasses import dataclass
 from django.http import JsonResponse
 from django.utils import timezone
 from rest_framework.status import is_success
-
-
-logger = logging.getLogger('myapp_dev')
-logger.setLevel(logging.DEBUG)
 
 
 class ResponseFormatter:
@@ -57,7 +54,7 @@ class ResponseFormatter:
         """
         tb = traceback.format_exc()
         CustomLogging(request=request).log_exception(tb=tb)
-        # logger.exception(traceback.format_exc())
+
         if exception:
             exception.detail = exception.detail if hasattr(exception, "detail") else exception
 
@@ -80,10 +77,10 @@ class ResponseFormatter:
 
 class CustomLogging:
     def __init__(self, *, request):
-        self.logger = logging.getLogger('myapp_dev')
+        self.logger = logging.getLogger('base_django_dev')
         self.request = request
     def log_exception(self, *, tb):
-        logger.error(f'{self.get_log_prefix(self.request)}\nTraceback: {tb}')
+        self.logger.exception(f'{self.get_log_prefix(self.request)}\nTraceback: {tb}')
 
     def get_client_ip(self, request):
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -98,7 +95,17 @@ class CustomLogging:
         api_name = request.path
         ip_address = self.get_client_ip(request)
 
-        return f'[API:{api_name}] | [User:{user}] | [ClientIP:{ip_address}] | [View:{view_name}]'
+        formatted_string = \
+            f"""
+            [Error]
+            1. API : {api_name}
+            2. LoginUser : {user}
+            3. DjangoView : {view_name}
+            4. ClientIP : {ip_address}
+            """
+
+        return formatted_string
+
 
     def generate_readable_timestamp(self):
         now = timezone.localtime(timezone.now())
