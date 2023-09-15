@@ -366,3 +366,5 @@ $RECYCLE.BIN/
 /db/data/
 /config/settings/.env
 /config/settings/.env.prod
+/db/
+/.compose_env
