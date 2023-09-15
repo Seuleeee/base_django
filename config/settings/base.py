@@ -14,6 +14,8 @@ from pathlib import Path
 import environ
 from datetime import timedelta
 
+from django.core.exceptions import ImproperlyConfigured
+
 
 env = environ.Env(
     DEBUG=(bool, True)
@@ -46,10 +48,12 @@ INSTALLED_APPS = [
     "django_celery_beat",
     "django_celery_results",
     "drf_yasg",
+    "django_prometheus",
     "api",
 ]
 
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -60,6 +64,7 @@ MIDDLEWARE = [
 
     # ============= custom middleware ==============
     "middleware.response.ResponseFormatter",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -130,6 +135,26 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+try:
+    env('GRAYLOG_ENVIRONMENT')
+except (KeyError, ImproperlyConfigured):
+    # Set graylog settings to empty dict if not present in env.ini
+    graylog_settings = {}
+else:
+    graylog_settings = {
+        'pygelf': {
+            'static_fields': {'_app': env('GRAYLOG_APP'),
+                              '_app_env': env('GRAYLOG_ENVIRONMENT')},
+            'class': 'log_utils.logging_utils.CustomGelfHttpHandler',
+            'debug': bool(env('GRAYLOG_DEBUG')),
+            'include_extra_fields': bool(env('GRAYLOG_INCLUDE_EXTRA_FIELDS')),
+            'host': env('GRAYLOG_HOST'),
+            'port': env('GRAYLOG_PORT'),
+            'compress': bool(env('GRAYLOG_COMPRESS')),
+        }
+    }
+
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -155,27 +180,41 @@ LOGGING = {
             'formatter': 'simple',
             'stream': 'ext://sys.stdout',
         },
-        'logfile': {
+        'log_file': {
             'class': 'logging.FileHandler',
-            'filters': ['require_debug_false'],
             'level': 'INFO',
             'formatter': 'simple',
+            'encoding': 'utf-8',
             'filename': os.path.join(BASE_DIR, 'logs/server.log'),
         },
         'error_file': {
             'class': 'logging.FileHandler',
-            'filters': ['require_debug_false'],
+            'filters': ['require_debug_true'],
             'level': 'ERROR',
-            'formatter': 'simple',
+            'encoding': 'utf-8',
             'filename': os.path.join(BASE_DIR, 'logs/error.log'),
         },
+        **graylog_settings,
     },
     'loggers': {
         'django.db.backends': {
-            'handlers': ['console', ],
+            'handlers': ['console', 'log_file'] + (['pygelf'] if graylog_settings else []),
+            'level': 'ERROR',
+        },
+        'django': {
+            'handlers': ['console', 'log_file'] + (['pygelf'] if graylog_settings else []),
+            'level': 'INFO',
+        },
+        'base_django_dev': {
+            'handlers': ['console', 'log_file', 'error_file']+ (['pygelf'] if graylog_settings else []),
             'level': 'DEBUG',
             'propagate': False,
-        }
+        },
+        'myapp_prod': {
+            'handlers': ['log_file', 'error_file',],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
     },
 }
 

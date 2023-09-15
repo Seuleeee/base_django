@@ -1,7 +1,6 @@
-from typing import TypeVar, Generic, Type, Optional, Any, List
+from typing import TypeVar, Generic, Type, Optional, Any
 
 from api.models.base import BaseModel
-
 
 ModelType = TypeVar("ModelType", bound=BaseModel)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
